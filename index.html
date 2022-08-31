@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Game of Life</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="./index.js"></script>
+  </head>
+  <body>
+    <canvas id="game"></canvas>
+    <section>
+      <button id="rndGeneration">Random generation</button>
+      <button id="clear">Clear</button>
+      <button id="start">Start</button>
+      <div>
+        <input id="range" step="1" type="range" value="8" min="1" max="30" />
+        <label for="range"></label>
+      </div>
+    </section>
+  </body>
+  <script>
+    const game = new GameOfLife(30, 30);
+
+    const dpi = window.devicePixelRatio;
+    const canvas = document.querySelector("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const w = canvas.offsetWidth;
+    const h = canvas.offsetHeight;
+
+    const range = document.querySelector("#range");
+    const label = document.querySelector("label");
+
+    const config = {
+      interval: null,
+      speed: parseInt(range.value),
+      sizeX: w / game.nbCellsWidth,
+      sizeY: h / game.nbCellsHeight,
+    };
+
+    label.textContent = config.speed;
+
+    canvas.width = w;
+    canvas.height = h;
+
+    //display game
+    function gameDisplay() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let y = 0; y < game.nbCellsWidth; ++y) {
+        for (let x = 0; x < game.nbCellsHeight; ++x) {
+          const value = game.getCase(y, x);
+
+          ctx.fillStyle = value ? "#E94560" : "#16213e";
+          ctx.strokeStyle = "#ffffff30";
+
+          const conf = [
+            x * config.sizeX,
+            y * config.sizeY,
+            config.sizeX,
+            config.sizeY,
+          ];
+
+          if (value) ctx.fillRect(...conf);
+          else ctx.strokeRect(...conf);
+        }
+      }
+    }
+
+    //game handler
+    function gameHandler() {
+      gameDisplay();
+      game.evoluate();
+    }
+
+    //random generation
+    function randomGeneration() {
+      game.randomGeneration();
+      gameDisplay();
+    }
+
+    //event listener
+    const start = document.querySelector("#start");
+    document
+      .querySelector("#rndGeneration")
+      .addEventListener("click", randomGeneration);
+    document.querySelector("#clear").addEventListener("click", function () {
+      start.textContent = "Start";
+      clearInterval(config.interval);
+      config.interval = null;
+      game.clear();
+      gameDisplay();
+    });
+    start.addEventListener("click", function () {
+      if (config.interval) {
+        clearInterval(config.interval);
+        config.interval = null;
+        start.textContent = "Start";
+      } else {
+        config.interval = setInterval(gameHandler, 1000 / config.speed);
+        start.textContent = "Stop";
+      }
+    });
+    range.addEventListener("input", function () {
+      config.speed = parseInt(range.value);
+      label.textContent = config.speed;
+
+      clearInterval(config.interval);
+      config.interval = setInterval(gameHandler, 1000 / config.speed);
+    });
+    canvas.addEventListener("click", function (e) {
+      const x = e.pageX - canvas.offsetLeft;
+      const y = e.pageY - canvas.offsetTop;
+
+      const column = Math.floor(x / config.sizeX);
+      const line = Math.floor(y / config.sizeY);
+
+      if (game.getCase(line, column)) game.deshydratate(line, column);
+      else game.hydratate(line, column);
+
+      gameDisplay();
+    });
+
+    gameDisplay();
+  </script>
+</html>

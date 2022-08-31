@@ -1,0 +1,53 @@
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  align-items: center;
+  background-color: #533483;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+  color: #fff;
+}
+
+canvas {
+  max-width: 100%;
+  width: 30rem;
+  height: min(30rem, 100vw);
+  background-color: #16213e;
+  margin-top: 1rem;
+}
+
+section {
+  display: flex;
+  align-items: center;
+  flex: 1 1;
+  gap: 1rem;
+  padding: 1rem;
+  width: 100%;
+  overflow: hidden;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+div {
+  display: flex;
+  align-items: center;
+}
+
+div > label {
+  margin-left: 0.5rem;
+}
+
+button {
+  border-radius: 0.2rem;
+  padding: 1rem;
+  border: none;
+  background-color: #e94560;
+  cursor: pointer;
+}
