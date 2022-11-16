@@ -22,8 +22,8 @@ class GameOfLife {
   }
 
   randomGeneration(factor = 0.2) {
-    for (let y = 0; y < game.nbCellsWidth; ++y) {
-      for (let x = 0; x < game.nbCellsHeight; ++x) {
+    for (let y = 0; y < this.nbCellsWidth; ++y) {
+      for (let x = 0; x < this.nbCellsHeight; ++x) {
         if (Math.random() < factor) this.hydratate(y, x);
         else this.deshydratate(y, x);
       }
